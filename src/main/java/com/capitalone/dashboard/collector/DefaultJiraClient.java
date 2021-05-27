@@ -817,17 +817,31 @@ public class DefaultJiraClient implements JiraClient {
 
     private ResponseEntity<String> makeRestCall(String url) throws HygieiaException {
         String jiraAccess = featureSettings.getJiraCredentials();
-        if (StringUtils.isEmpty(jiraAccess)) {
-            return restClient.makeRestCallGet(url);
-        } else {
+        String jiraOAuth = featureSettings.getJiraOauthAuthtoken();
+        if (!StringUtils.isEmpty(jiraAccess)) {
             String jiraAccessBase64 = new String(Base64.decodeBase64(jiraAccess));
             String[] parts = jiraAccessBase64.split(":");
             if (parts.length != 2) {
                 throw new HygieiaException("Invalid Jira credentials", HygieiaException.INVALID_CONFIGURATION);
             }
             return restClient.makeRestCallGet(url, createHeaders(parts[0], parts[1]));
+        } else if (!StringUtils.isEmpty(jiraOAuth)) {
+            return restClient.makeRestCallGet(url, createOAuthHeaders(jiraOAuth));
+        } else {
+            return restClient.makeRestCallGet(url);
         }
+
     }
+
+    private static HttpHeaders createOAuthHeaders(final String oauthToken) {
+        String authHeader = "Bearer " + oauthToken;
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", authHeader);
+        return headers;
+
+    }
+
 
     private static HttpHeaders createHeaders(final String userId, final String password) {
         String auth = userId + ':' + password;

@@ -94,6 +94,15 @@ public class DefaultJiraClientTest {
         assertThat(projects.stream().count()).isEqualTo(2);
     }
     @Test
+    public void getProjectsWithOAuth() throws IOException{
+        doReturn(new ResponseEntity<>(getExpectedJSON("response/projectresponse.json"), HttpStatus.OK)).when(rest).exchange(contains("api/2/project"), eq(HttpMethod.GET), Matchers.any(HttpEntity.class), eq(String.class));
+        featureSettings.setJiraOauthAuthtoken("dXNlcm5hbWU6cGFzc3dvcmQ=");
+        defaultJiraClient = new DefaultJiraClient(featureSettings,new RestClient(restOperationsSupplier));
+        Set<Scope> projects = defaultJiraClient.getProjects();
+        assertThat(projects.stream().count()).isEqualTo(2);
+    }
+
+    @Test
     public void getProjects() throws IOException{
         doReturn(new ResponseEntity<>(getExpectedJSON("response/projectresponse.json"), HttpStatus.OK)).when(rest).exchange(contains("api/2/project"), eq(HttpMethod.GET), Matchers.any(HttpEntity.class), eq(String.class));
         Set<Scope> projects = defaultJiraClient.getProjects();

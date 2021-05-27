@@ -116,9 +116,11 @@ feature.jiraQueryEndpoint=rest/api/2/
 
 feature.jiraCredentials=dXNlcm5hbWU6cGFzc3dvcmQ=
 
-# OAuth is not fully implemented; please blank-out the OAuth values:
 
+# OAuth Bearer tokens are implemented.  Put your Bearer token below, if you have one:
 feature.jiraOauthAuthtoken=
+
+# OAuth is not fully implemented; please blank-out these OAuth values:
 feature.jiraOauthRefreshtoken=
 feature.jiraOauthRedirecturi=
 feature.jiraOauthExpiretime=
